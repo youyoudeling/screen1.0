@@ -37,7 +37,8 @@ class DraggableButton(QPushButton):
         cor = QPoint(x, y)
         self.move(self.mapToParent(cor))  # 需要maptoparent一下才可以的,否则只是相对位置。
         self.parent().textEdit1.setText((str)(self.mapToParent(cor).x()) + " , " + (str)(self.mapToParent(cor).y()))
-        self.parent().label1.move(self.mapToParent(cor).x(),self.mapToParent(cor).y()+screnData.screenData().unitH())
+        #self.parent().label1.move(self.mapToParent(cor).x(),self.mapToParent(cor).y()+screnData.screenData().unitH())
+        self.follow.move(self.mapToParent(cor).x(), self.mapToParent(cor).y() + screnData.screenData().unitH())
         print('mouseReleaseEvent,', time.time(), e.pos(), e.x(), e.y(), self.mapToParent(cor))
         #print("mouseReleaseEvent ")
 
