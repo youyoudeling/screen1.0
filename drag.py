@@ -46,38 +46,67 @@ class DraggableButton(QPushButton):
 
 
 class DragWidget(QWidget):
+    BUTTONS = []
+    LABELS=[]
+    BUTTONNUM=-1
+
     def __init__(self):
         super().__init__()
         self.initUI()
 
     def addbutton(self,text):
-
-        #label
-        label1 = QLabel(text, self)
-        label1.move(screnData.screenData().leftSkipP(),
+        self.BUTTONNUM = self.BUTTONNUM + 1
+        # label
+        label1= QLabel(text, self)
+        self.LABELS.append(label1)
+        self.LABELS[self.BUTTONNUM].move(screnData.screenData().leftSkipP(),
                     screnData.screenData().topSkipP() + screnData.screenData().unitH())
-        label1.resize(100, 30)
+        self.LABELS[self.BUTTONNUM].resize(100, 30)
 
-        #button
-        button1 = DraggableButton("", self,label1)
-        button1.move(screnData.screenData().leftSkipP(), screnData.screenData().topSkipP())
+        # button
+        button1 = DraggableButton("", self, self.LABELS[self.BUTTONNUM])
+        self.BUTTONS.append(button1)
+        self.BUTTONS[self.BUTTONNUM].move(screnData.screenData().leftSkipP(), screnData.screenData().topSkipP())
         print(screnData.screenData().leftSkipP())
         print(screnData.screenData().topSkipP())
-        button1.resize(screnData.screenData().unitW(),screnData.screenData().unitH())
+        button1.resize(screnData.screenData().unitW(), screnData.screenData().unitH())
         button1.setIcon(QtGui.QIcon('myImage.jpg'))
         button1.setIconSize(QtCore.QSize(screnData.screenData().unitW(), screnData.screenData().unitW()))
+
+
+        #label
+        # label1 = QLabel(text, self)
+        # label1.move(screnData.screenData().leftSkipP(),
+        #             screnData.screenData().topSkipP() + screnData.screenData().unitH())
+        # label1.resize(100, 30)
+        #
+        # #button
+        # button1 = DraggableButton("", self,label1)
+        # button1.move(screnData.screenData().leftSkipP(), screnData.screenData().topSkipP())
+        # print(screnData.screenData().leftSkipP())
+        # print(screnData.screenData().topSkipP())
+        # button1.resize(screnData.screenData().unitW(),screnData.screenData().unitH())
+        # button1.setIcon(QtGui.QIcon('myImage.jpg'))
+        # button1.setIconSize(QtCore.QSize(screnData.screenData().unitW(), screnData.screenData().unitW()))
 
 
 
 
 
     def initUI(self):
+
         self.textEdit1=QLabel(self)
         self.textEdit1.move(0,0)
         self.textEdit1.resize(100, 30)
    
 
         self.addbutton("test")
+        #self.BUTTONS[self.BUTTONNUM-1].move(0,0)
+        self.addbutton("test2")
+        for each in self.BUTTONS:
+            print(each.geometry().x())
+            print(each.geometry().y())
+
 
 
 
