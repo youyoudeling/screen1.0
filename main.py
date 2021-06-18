@@ -9,7 +9,6 @@ import drag
 
 import string
 
-
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()

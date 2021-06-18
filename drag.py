@@ -1,24 +1,34 @@
+
 import string
 import sys
+
 
 from PySide2 import QtGui,QtCore
 from PySide2.QtWidgets import QPushButton, QWidget, QApplication,QTextEdit,QPlainTextEdit,QLabel,QDialog,QGridLayout,QVBoxLayout
 from PySide2.QtCore import Qt, QMimeData, QPoint
-
+#import test
 import time
 import screnData
 
 class DraggableButton(QPushButton):
     follow=None
-    def __init__(self, title, parent,f):
+    text=None
+    def __init__(self, title, parent,f,t):
         super().__init__(title, parent)
         self.iniDragCor = [0, 0]
         self.follow=f
+        self.text=t
 
     def mousePressEvent(self, e):
         print("ppp", e.pos())
         self.iniDragCor[0] = e.x()
         self.iniDragCor[1] = e.y()
+
+        print(self.text)
+        #test.openword(self.text)
+        #ShellExecute(0, 'open', self.text, '', '', 1)
+
+
 
     def mouseMoveEvent(self, e):
         x = e.x() - self.iniDragCor[0]
@@ -50,62 +60,103 @@ class DragWidget(QWidget):
     LABELS=[]
     BUTTONNUM=-1
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self,parent=None):
+        super(DragWidget,self).__init__(parent)
         self.initUI()
 
+    def add(self,text):
+        self.BUTTONNUM = self.BUTTONNUM + 1
+        label=QLabel(text.split('/')[-1],self)
+
+        label.setFixedSize(400, 30)
+        self.LABELS.append(label)
+        widget = DraggableButton("", self, self.LABELS[self.BUTTONNUM],text)
+        widget.setFixedSize(200,200)
+
+        self.BUTTONS.append(widget)
+        self.BUTTONS[self.BUTTONNUM].move(screnData.screenData().leftSkipP(), screnData.screenData().topSkipP())
+
+        widget.setFixedSize(screnData.screenData().unitW(), screnData.screenData().unitH())
+        widget.setIcon(QtGui.QIcon('myImage.png'))
+        widget.setIconSize(QtCore.QSize(screnData.screenData().unitW(), screnData.screenData().unitW()))
+
+
+        self.layout.addWidget(widget)
+        self.layout.addWidget(label)
+        self.BUTTONS[self.BUTTONNUM].move(0,0)
+        self.LABELS[self.BUTTONNUM].move(0,0)
+        return widget
+
+
+
     def addbutton(self,text):
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+        print("add")
+        print(text)
         self.BUTTONNUM = self.BUTTONNUM + 1
         # label
         label1= QLabel(text, self)
         self.LABELS.append(label1)
-        self.LABELS[self.BUTTONNUM].move(screnData.screenData().leftSkipP(),
-                    screnData.screenData().topSkipP() + screnData.screenData().unitH())
-        self.LABELS[self.BUTTONNUM].resize(100, 30)
+
+        label1.setFixedSize(400, 30)
 
         # button
         button1 = DraggableButton("", self, self.LABELS[self.BUTTONNUM])
         self.BUTTONS.append(button1)
-        self.BUTTONS[self.BUTTONNUM].move(screnData.screenData().leftSkipP(), screnData.screenData().topSkipP())
+        #self.BUTTONS[self.BUTTONNUM].move(screnData.screenData().leftSkipP(), screnData.screenData().topSkipP())
         print(screnData.screenData().leftSkipP())
         print(screnData.screenData().topSkipP())
-        button1.resize(screnData.screenData().unitW(), screnData.screenData().unitH())
-        button1.setIcon(QtGui.QIcon('myImage.jpg'))
+        button1.setFixedSize(screnData.screenData().unitW(), screnData.screenData().unitH())
+        button1.setIcon(QtGui.QIcon('myImage.png'))
         button1.setIconSize(QtCore.QSize(screnData.screenData().unitW(), screnData.screenData().unitW()))
 
+       # button1.move(0,0)
+        self.layout.addWidget(button1)
+        self.layout.addWidget(label1)
 
-        #label
-        # label1 = QLabel(text, self)
         # label1.move(screnData.screenData().leftSkipP(),
         #             screnData.screenData().topSkipP() + screnData.screenData().unitH())
-        # label1.resize(100, 30)
-        #
-        # #button
-        # button1 = DraggableButton("", self,label1)
-        # button1.move(screnData.screenData().leftSkipP(), screnData.screenData().topSkipP())
-        # print(screnData.screenData().leftSkipP())
-        # print(screnData.screenData().topSkipP())
-        # button1.resize(screnData.screenData().unitW(),screnData.screenData().unitH())
-        # button1.setIcon(QtGui.QIcon('myImage.jpg'))
-        # button1.setIconSize(QtCore.QSize(screnData.screenData().unitW(), screnData.screenData().unitW()))
+        # button1.move(0,0)
+        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
 
 
+    # def dropEvent(self, e):
+    #     print("down")
+    #     self.addbutton(e.mimeData().text())
+    #     self.textEdit1.setText(e.mimeData().text())
+    #
+    # def dragEnterEvent(self, e):
+    #     if e.mimeData().hasUrls():
+    #         e.acceptProposedAction()
+    def dropEvent(self, e):
+        print("down")
+
+
+
+    def dragEnterEvent(self, e):
+        if e.mimeData().hasUrls():
+            e.acceptProposedAction()
+            b1=self.add(e.mimeData().text())
 
 
 
     def initUI(self):
+        self.setAcceptDrops(True)
 
-        self.textEdit1=QLabel(self)
-        self.textEdit1.move(0,0)
+        self.textEdit1 = QLabel()
         self.textEdit1.resize(100, 30)
-   
+        self.textEdit1.move(0, 0)
+        desktop = QApplication.desktop()
+        WIDGET = desktop.width()
+        HEIGHT = desktop.height()
+        # self.resize(WIDGET,HEIGHT)
+        self.layout = QVBoxLayout()
 
-        self.addbutton("test")
-        #self.BUTTONS[self.BUTTONNUM-1].move(0,0)
-        self.addbutton("test2")
-        for each in self.BUTTONS:
-            print(each.geometry().x())
-            print(each.geometry().y())
+        self.setLayout(self.layout)
+
+
+
+
 
 
 

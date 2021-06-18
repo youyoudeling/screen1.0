@@ -42,7 +42,7 @@ class screenData:
 
     # 返回每毫米有多少个像素 每个感应单元（包括间隔）的长度和高度
     def unitW(self):
-        print("感应单元的横向长度是" , self.coilWH+self.coilHorizontalSkip)
+        #print("感应单元的横向长度是" , self.coilWH+self.coilHorizontalSkip)
         return (self.coilWH+self.coilHorizontalSkip)*self.unitWPixel()
     def unitH(self):
         return (self.coilWH+self.coilVerticalSkip)*self.unitHPixel()
