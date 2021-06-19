@@ -2,7 +2,7 @@
 import string
 import sys
 
-
+from win32api import ShellExecute
 from PySide2 import QtGui,QtCore
 from PySide2.QtWidgets import QPushButton, QWidget, QApplication,QTextEdit,QPlainTextEdit,QLabel,QDialog,QGridLayout,QVBoxLayout
 from PySide2.QtCore import Qt, QMimeData, QPoint
@@ -26,7 +26,11 @@ class DraggableButton(QPushButton):
 
         print(self.text)
         #test.openword(self.text)
-        #ShellExecute(0, 'open', self.text, '', '', 1)
+
+
+    def mouseDoubleClickEvent(self, e) -> None:
+        print("双击")
+        ShellExecute(0, 'open', self.text, '', '', 1)
 
 
 

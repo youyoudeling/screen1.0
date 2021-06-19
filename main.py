@@ -34,7 +34,8 @@ class MainWindow(QMainWindow):
         print("屏幕高:" + str(HEIGHT))
 
 
-        self.setFixedSize(WIDGET,HEIGHT)
+        #self.setFixedSize(WIDGET,HEIGHT)
+        self.resize(200,200)
 
         self.tabwidget = QTabWidget(self)
         self.tabwidget.setFixedSize(WIDGET,HEIGHT)
