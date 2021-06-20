@@ -1,7 +1,7 @@
 
 import string
 import sys
-
+import transfer
 from win32api import ShellExecute
 from PySide2 import QtGui,QtCore
 from PySide2.QtWidgets import QPushButton, QWidget, QApplication,QTextEdit,QPlainTextEdit,QLabel,QDialog,QGridLayout,QVBoxLayout
@@ -9,10 +9,14 @@ from PySide2.QtCore import Qt, QMimeData, QPoint
 #import test
 import time
 import screnData
-
+import docx
+transfer=transfer.transfer()
 class DraggableButton(QPushButton):
+    global transfer
     follow=None
     text=None
+    locationX=screnData.screenData().leftSkip+10
+    locationY=screnData.screenData().topSkip+10
     def __init__(self, title, parent,f,t):
         super().__init__(title, parent)
         self.iniDragCor = [0, 0]
@@ -53,6 +57,27 @@ class DraggableButton(QPushButton):
         self.parent().textEdit1.setText((str)(self.mapToParent(cor).x()) + " , " + (str)(self.mapToParent(cor).y()))
         #self.parent().label1.move(self.mapToParent(cor).x(),self.mapToParent(cor).y()+screnData.screenData().unitH())
         self.follow.move(self.mapToParent(cor).x(), self.mapToParent(cor).y() + screnData.screenData().unitH())
+        print("self.locationX", self.locationX)
+        print("self.locationY", self.locationY)
+        print(screnData.screenData().UnitNum(self.locationX, self.locationY))
+        file = docx.Document(self.text.split('///')[-1])
+        print("地址"+self.text.split('///')[-1])
+        text=file.paragraphs[0].text
+        print(text)
+        s = "xcx:gh_f4803b06a633path:pages/index/index?document=" + self.text.split('/')[-1]+"&text="+text
+        transfer.output("", 2, screnData.screenData().UnitNum(self.locationX , self.locationY))
+
+        time.sleep(0.01)
+        print("self.X", self.mapToParent(cor).x())
+        print("self.Y", self.mapToParent(cor).y())
+        print(screnData.screenData().UnitNum(self.mapToParent(cor).x(), self.mapToParent(cor).y()))
+        transfer.output(s,0,screnData.screenData().UnitNum(self.mapToParent(cor).x(),self.mapToParent(cor).y()))
+
+
+
+        self.locationX=self.mapToParent(cor).x()
+        self.locationY=self.mapToParent(cor).y()
+
         print('mouseReleaseEvent,', time.time(), e.pos(), e.x(), e.y(), self.mapToParent(cor))
         #print("mouseReleaseEvent ")
 
@@ -80,58 +105,19 @@ class DragWidget(QWidget):
         self.BUTTONS.append(widget)
         self.BUTTONS[self.BUTTONNUM].move(screnData.screenData().leftSkipP(), screnData.screenData().topSkipP())
 
-        widget.setFixedSize(screnData.screenData().unitW(), screnData.screenData().unitH())
+        widget.setFixedSize(QtCore.QSize(screnData.screenData().unitW(), screnData.screenData().unitH()))
+        #widget.setFixedSize(230, 230)
         widget.setIcon(QtGui.QIcon('myImage.png'))
+
         widget.setIconSize(QtCore.QSize(screnData.screenData().unitW(), screnData.screenData().unitW()))
 
 
         self.layout.addWidget(widget)
         self.layout.addWidget(label)
-        self.BUTTONS[self.BUTTONNUM].move(0,0)
-        self.LABELS[self.BUTTONNUM].move(0,0)
         return widget
 
 
 
-    def addbutton(self,text):
-        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-        print("add")
-        print(text)
-        self.BUTTONNUM = self.BUTTONNUM + 1
-        # label
-        label1= QLabel(text, self)
-        self.LABELS.append(label1)
-
-        label1.setFixedSize(400, 30)
-
-        # button
-        button1 = DraggableButton("", self, self.LABELS[self.BUTTONNUM])
-        self.BUTTONS.append(button1)
-        #self.BUTTONS[self.BUTTONNUM].move(screnData.screenData().leftSkipP(), screnData.screenData().topSkipP())
-        print(screnData.screenData().leftSkipP())
-        print(screnData.screenData().topSkipP())
-        button1.setFixedSize(screnData.screenData().unitW(), screnData.screenData().unitH())
-        button1.setIcon(QtGui.QIcon('myImage.png'))
-        button1.setIconSize(QtCore.QSize(screnData.screenData().unitW(), screnData.screenData().unitW()))
-
-       # button1.move(0,0)
-        self.layout.addWidget(button1)
-        self.layout.addWidget(label1)
-
-        # label1.move(screnData.screenData().leftSkipP(),
-        #             screnData.screenData().topSkipP() + screnData.screenData().unitH())
-        # button1.move(0,0)
-        print("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-
-
-    # def dropEvent(self, e):
-    #     print("down")
-    #     self.addbutton(e.mimeData().text())
-    #     self.textEdit1.setText(e.mimeData().text())
-    #
-    # def dragEnterEvent(self, e):
-    #     if e.mimeData().hasUrls():
-    #         e.acceptProposedAction()
     def dropEvent(self, e):
         print("down")
 
